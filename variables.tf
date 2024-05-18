@@ -11,14 +11,14 @@ variable "resource_group_name_prefix" {
 }
 
 variable "cluster_name" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "Name of the cluster. Is used for rg and vnet names also."
 }
 
 variable "cluster_sku_tier" {
-  type = string
-  default = "Free"
+  type        = string
+  default     = "Free"
   description = ""
 }
 
@@ -64,4 +64,10 @@ variable "username" {
   type        = string
   description = "The admin username for the new cluster."
   default     = "azureadmin"
+}
+
+variable "admin_groups" {
+  type        = list(any)
+  default     = []
+  description = "List of groups"
 }
