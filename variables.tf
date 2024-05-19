@@ -4,6 +4,10 @@ variable "resource_group_location" {
   description = "Location of the resource group."
 }
 
+variable "aiven_api_token" {
+  type = string
+}
+
 variable "resource_group_name_prefix" {
   type        = string
   default     = "rg"

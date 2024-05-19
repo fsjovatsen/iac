@@ -35,6 +35,10 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = ">= 1.7.0"
     }
+    aiven = {
+      source  = "aiven/aiven"
+      version = ">=4.0.0, < 5.0.0"
+    }
   }
 }
 
@@ -50,4 +54,8 @@ provider "helm" {
   kubernetes {
     config_path = "~/.kube/config"
   }
+}
+
+provider "aiven" {
+  api_token = var.aiven_api_token
 }

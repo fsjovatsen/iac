@@ -5,7 +5,6 @@ resource "azurerm_public_ip" "pip-sjovatsen-no" {
   allocation_method   = "Static"
   sku                 = "Standard"
   domain_name_label   = "pip-sjovatsen-no"
-
 }
 
 data "azurerm_user_assigned_identity" "agw" {
