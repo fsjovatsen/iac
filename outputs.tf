@@ -1,3 +1,6 @@
+output "mc_resource_group_name" {
+  value = azurerm_kubernetes_cluster.k8s.node_resource_group
+}
 output "resource_group_name" {
   value = azurerm_resource_group.rg.name
 }

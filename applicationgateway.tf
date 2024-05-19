@@ -4,6 +4,8 @@ resource "azurerm_public_ip" "pip-sjovatsen-no" {
   location            = azurerm_resource_group.rg.location
   allocation_method   = "Static"
   sku                 = "Standard"
+  domain_name_label   = "pip-sjovatsen-no"
+
 }
 
 data "azurerm_user_assigned_identity" "agw" {
