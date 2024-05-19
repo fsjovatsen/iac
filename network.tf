@@ -18,36 +18,30 @@ resource "azurerm_subnet" "k8s" {
   virtual_network_name = azurerm_virtual_network.k8s.name
 }
 
-resource "azurerm_virtual_network" "app_gw" {
+resource "azurerm_virtual_network" "agw" {
   name                = "vnet-app-gateway"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   address_space       = ["10.254.0.0/16"]
-
-
-  #   subnet {
-  #     name           = "app-gateway"
-  #     address_prefix = "10.254.0.0/24"
-  #   }
 }
 
-resource "azurerm_subnet" "app_gw" {
+resource "azurerm_subnet" "agw" {
   address_prefixes     = ["10.254.0.0/24"]
   name                 = "app-gateway"
   resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.app_gw.name
+  virtual_network_name = azurerm_virtual_network.agw.name
 }
 
-resource "azurerm_virtual_network_peering" "app_gw" {
-  name                      = "${azurerm_virtual_network.app_gw.name}-${azurerm_virtual_network.k8s.name}"
+resource "azurerm_virtual_network_peering" "agw" {
+  name                      = "${azurerm_virtual_network.agw.name}-${azurerm_virtual_network.k8s.name}"
   resource_group_name       = azurerm_resource_group.rg.name
-  virtual_network_name      = azurerm_virtual_network.app_gw.name
+  virtual_network_name      = azurerm_virtual_network.agw.name
   remote_virtual_network_id = azurerm_virtual_network.k8s.id
 }
 
 resource "azurerm_virtual_network_peering" "k8s" {
-  name                      = "${azurerm_virtual_network.k8s.name}-${azurerm_virtual_network.app_gw.name}"
+  name                      = "${azurerm_virtual_network.k8s.name}-${azurerm_virtual_network.agw.name}"
   resource_group_name       = azurerm_resource_group.rg.name
   virtual_network_name      = azurerm_virtual_network.k8s.name
-  remote_virtual_network_id = azurerm_virtual_network.app_gw.id
+  remote_virtual_network_id = azurerm_virtual_network.agw.id
 }

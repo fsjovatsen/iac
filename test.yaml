@@ -21,6 +21,7 @@ metadata:
 spec:
   selector:
     app: aspnetapp
+  type: ClusterIP
   ports:
     - protocol: TCP
       port: 80
@@ -31,20 +32,18 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-aspnetapp
-  annotations:
-    alb.networking.azure.io/alb-name: alb-test
-    alb.networking.azure.io/alb-namespace: default
+  name: aspnetapp
+  # annotations:
+  #   kubernetes.io/ingress.class: azure/application-gateway
 spec:
-  ingressClassName: azure-alb-external
+  ingressClassName: azure-application-gateway
   rules:
-    - host: contoso.com
-      http:
+    - http:
         paths:
           - path: /
-            pathType: Prefix
             backend:
               service:
                 name: aspnetapp
                 port:
-                  number: 8080
+                  number: 80
+            pathType: Exact

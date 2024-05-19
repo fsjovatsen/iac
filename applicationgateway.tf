@@ -1,4 +1,4 @@
-resource "azurerm_public_ip" "pip" {
+resource "azurerm_public_ip" "pip-sjovatsen-no" {
   name                = "pip-sjovatsen-no"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
@@ -6,18 +6,35 @@ resource "azurerm_public_ip" "pip" {
   sku                 = "Standard"
 }
 
-locals {
-  backend_address_pool_name      = "${azurerm_virtual_network.app_gw.name}-beap"
-  frontend_port_name             = "${azurerm_virtual_network.app_gw.name}-feport"
-  frontend_ip_configuration_name = "${azurerm_virtual_network.app_gw.name}-feip"
-  http_setting_name              = "${azurerm_virtual_network.app_gw.name}-be-htst"
-  listener_name                  = "${azurerm_virtual_network.app_gw.name}-httplstn"
-  request_routing_rule_name      = "${azurerm_virtual_network.app_gw.name}-rqrt"
-  redirect_configuration_name    = "${azurerm_virtual_network.app_gw.name}-rdrcfg"
+data "azurerm_user_assigned_identity" "agw" {
+  name                = "ingressapplicationgateway-${var.cluster_name}"
+  resource_group_name = azurerm_kubernetes_cluster.k8s.node_resource_group
 }
 
-resource "azurerm_application_gateway" "app_gw" {
-  name                = "example-appgateway"
+resource "azurerm_role_assignment" "agw-reader-role" {
+  principal_id         = data.azurerm_user_assigned_identity.agw.principal_id
+  scope                = azurerm_resource_group.rg.id
+  role_definition_name = "Reader"
+}
+
+resource "azurerm_role_assignment" "agw-network-contributor-role" {
+  principal_id         = data.azurerm_user_assigned_identity.agw.principal_id
+  scope                = azurerm_resource_group.rg.id
+  role_definition_name = "Network Contributor"
+}
+
+locals {
+  backend_address_pool_name      = "${azurerm_virtual_network.agw.name}-beap"
+  frontend_port_name             = "${azurerm_virtual_network.agw.name}-feport"
+  frontend_ip_configuration_name = "${azurerm_virtual_network.agw.name}-feip"
+  http_setting_name              = "${azurerm_virtual_network.agw.name}-be-htst"
+  listener_name                  = "${azurerm_virtual_network.agw.name}-httplstn"
+  request_routing_rule_name      = "${azurerm_virtual_network.agw.name}-rqrt"
+  redirect_configuration_name    = "${azurerm_virtual_network.agw.name}-rdrcfg"
+}
+
+resource "azurerm_application_gateway" "agw" {
+  name                = "agw-${var.cluster_name}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
 
@@ -28,13 +45,13 @@ resource "azurerm_application_gateway" "app_gw" {
   }
 
   gateway_ip_configuration {
-    name      = "my-gateway-ip-configuration"
-    subnet_id = azurerm_subnet.app_gw.id
+    name      = "gateway-ip-configuration"
+    subnet_id = azurerm_subnet.agw.id
   }
 
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
-    public_ip_address_id = azurerm_public_ip.pip.id
+    public_ip_address_id = azurerm_public_ip.pip-sjovatsen-no.id
   }
 
   frontend_port {

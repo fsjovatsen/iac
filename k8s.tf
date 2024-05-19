@@ -11,7 +11,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   role_based_access_control_enabled = true
 
   ingress_application_gateway {
-    gateway_id = azurerm_application_gateway.app_gw.id
+    gateway_id = azurerm_application_gateway.agw.id
   }
 
   identity {
@@ -61,39 +61,3 @@ resource "azurerm_kubernetes_cluster_node_pool" "k8s_system_node_pool" {
   min_count             = var.system_pool_min_node_count
   vnet_subnet_id        = azurerm_subnet.k8s.id
 }
-
-# resource "azurerm_user_assigned_identity" "alb" {
-#   location            = azurerm_resource_group.rg.location
-#   name                = "azure-alb-identity"
-#   resource_group_name = azurerm_resource_group.rg.name
-# }
-#
-# resource "azurerm_role_assignment" "alb" {
-#   principal_id         = azurerm_user_assigned_identity.alb.principal_id
-#   scope                = azurerm_kubernetes_cluster.k8s.node_resource_group_id
-#   principal_type       = "ServicePrincipal"
-#   role_definition_name = "Reader"
-# }
-#
-# resource "azurerm_role_assignment" "alb-mc" {
-#   principal_id         = azurerm_user_assigned_identity.alb.principal_id
-#   scope                = azurerm_kubernetes_cluster.k8s.node_resource_group_id
-#   principal_type       = "ServicePrincipal"
-#   role_definition_name = "AppGw for Containers Configuration Manager"
-# }
-#
-# resource "azurerm_role_assignment" "alb-subnet" {
-#   principal_id         = azurerm_user_assigned_identity.alb.principal_id
-#   scope                = azurerm_subnet.app_gw.id
-#   principal_type       = "ServicePrincipal"
-#   role_definition_name = "Network Contributor"
-# }
-#
-# resource "azurerm_federated_identity_credential" "alb" {
-#   audience            = ["api://AzureADTokenExchange"]
-#   issuer              = azurerm_kubernetes_cluster.k8s.oidc_issuer_url
-#   name                = "azure-alb-identity"
-#   parent_id           = azurerm_user_assigned_identity.alb.id
-#   resource_group_name = azurerm_resource_group.rg.name
-#   subject             = "system:serviceaccount:azure-alb-system:alb-controller-sa"
-# }
