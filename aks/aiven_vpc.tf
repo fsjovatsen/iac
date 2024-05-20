@@ -21,7 +21,7 @@ resource "aiven_project_vpc" "avn_vpc" {
 
 # 2. Create application object
 resource "azuread_application" "app" {
-  display_name = "aiven-terraform"
+  display_name     = "aiven-terraform"
   sign_in_audience = "AzureADandPersonalMicrosoftAccount"
 
   api {
@@ -32,10 +32,10 @@ resource "azuread_application" "app" {
 # # 3. Create a service principal for your app object
 resource "azuread_service_principal" "app_principal" {
   application_id = azuread_application.app.application_id
-#   app_role_assignment_required = false
-#   owners = [
-#     data.azurerm_client_config.tentant.object_id
-#   ]
+  #   app_role_assignment_required = false
+  #   owners = [
+  #     data.azurerm_client_config.tentant.object_id
+  #   ]
 }
 #
 # # 4. Set a password for your app object
@@ -117,7 +117,7 @@ provider "azurerm" {
 
 resource "azurerm_virtual_network_peering" "network_peering" {
   provider                     = azurerm.app
-  name                         = "my-azure-virtual-network-peering"
+  name                         = "azure-virtual-network-peering"
   remote_virtual_network_id    = aiven_azure_vpc_peering_connection.peering_connection.state_info["to-network-id"]
   resource_group_name          = azurerm_resource_group.rg.name
   virtual_network_name         = azurerm_virtual_network.k8s.name

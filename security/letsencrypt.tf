@@ -19,8 +19,8 @@ data "kubectl_file_documents" "cert_man_crds" {
 
 # apply each resource from the yaml one by one
 resource "kubectl_manifest" "knative_serving_crds" {
-  for_each  = data.kubectl_file_documents.cert_man_crds.manifests
-  yaml_body = each.value
+  for_each   = data.kubectl_file_documents.cert_man_crds.manifests
+  yaml_body  = each.value
 }
 
 resource "helm_release" "cert-man" {
