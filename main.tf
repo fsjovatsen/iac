@@ -16,3 +16,9 @@ module "observability" {
   aiven_api_token = var.aiven_api_token
   cluster_name = var.cluster_name
 }
+
+module "security" {
+  source = "./security"
+
+  cluster_name = var.cluster_name
+}
