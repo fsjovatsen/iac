@@ -75,3 +75,19 @@ variable "admin_groups" {
   default     = []
   description = "List of groups"
 }
+
+variable "ARM_SUBSCRIPTION_ID" {
+  type = string
+}
+
+variable "ARM_TENANT_ID" {
+  type = string
+}
+
+variable "ARM_CLIENT_ID" {
+  type = string
+}
+
+variable "ARM_CLIENT_SECRET" {
+  type = string
+}
